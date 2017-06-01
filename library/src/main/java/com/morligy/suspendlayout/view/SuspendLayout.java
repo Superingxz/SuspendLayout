@@ -94,67 +94,35 @@ public class SuspendLayout extends LinearLayout implements NestedScrollingParent
     }
 
     @Override
-    public boolean onNestedFling(View target, float velocityX, float velocityY, boolean consumed)
-    {
-        Log.e(TAG, "onNestedFling");
-        return false;
-    }
-
-    @Override
-    public boolean onNestedPreFling(View target, float velocityX, float velocityY)
-    {
-  /*      Log.e(TAG, "onNestedPreFling");
-        //down - //up+
-        if (getScrollY() >= mTopViewHeight - 80) return  false;*/
-        /*if (mViewPager != null && mViewPager.getScaleY() == 0) {
+    public boolean onNestedFling(View target, float velocityX, float velocityY, boolean consumed) {
+        boolean hiddenTop = velocityY > 0 && getScrollY() < mTopViewHeight - 80;
+        boolean showTop = velocityY < 0 && getScrollY() >= 0 && !ViewCompat.canScrollVertically(target, -1);
+        if (hiddenTop || showTop) {
             fling((int) velocityY);
-            return true;
-        } else {
-            return false;
-        }*/
-       /* if (mInnerScrollView != null && mVelocityTracker.getYVelocity() > 0) {
-            if (mInnerScrollView instanceof ScrollView) {
-                if (mInnerScrollView.getScrollY() != 0) {
-                  return true;
-                }
-            } else if (mInnerScrollView instanceof ListView) {
-                ListView lv = (ListView) mInnerScrollView;
-                View c = lv.getChildAt(lv.getFirstVisiblePosition());
-                if (c != null && c.getTop() != 0) {
-                    return true;
-                }
-            } else if (mInnerScrollView instanceof GridViewWithHeaderAndFooter) {
-                GridView gv = (GridView) mInnerScrollView;
-                View c = gv.getChildAt(gv.getFirstVisiblePosition());
-                if ( c != null && c.getTop() != 0) {
-                    return true;
-                }
-            } else if (mInnerScrollView instanceof RecyclerView) {
-                RecyclerView rv = (RecyclerView) mInnerScrollView;
-                if (rv.getLayoutManager() == null) {
-                    throw new IllegalStateException("RecyclerView does not have LayoutManager instance.");
-                }
-                View c = rv.getChildAt(0);
-                if (c != null && c.getTop() != 0) {
-                    return true;
-                }
-            }
-        }*/
-        fling((int) velocityY);
+        }
         return false;
     }
 
     @Override
-    public int getNestedScrollAxes()
-    {
+    public boolean onNestedPreFling(View target, float velocityX, float velocityY) {
+        Log.e(TAG, "onNestedPreScroll");
+        int mScrollY = getScrollY();
+        boolean hiddenTop = velocityY > 0 && mScrollY < mTopViewHeight - 80;
+        boolean canScrooVetical = ViewCompat.canScrollVertically(target, -1);
+        boolean showTop = velocityY < 0 && mScrollY >= 0 && !canScrooVetical;
+        if (hiddenTop || showTop) {
+            fling((int) velocityY);
+        }
+        return false;
+    }
+
+    @Override
+    public int getNestedScrollAxes() {
         Log.e(TAG, "getNestedScrollAxes");
         return 0;
     }
 
-
-
-    public SuspendLayout(Context context, AttributeSet attrs)
-    {
+    public SuspendLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
         setOrientation(LinearLayout.VERTICAL);
         TypedArray a = context.obtainStyledAttributes(attrs,
@@ -171,18 +139,14 @@ public class SuspendLayout extends LinearLayout implements NestedScrollingParent
 
     }
 
-    private void initVelocityTrackerIfNotExists()
-    {
-        if (mVelocityTracker == null)
-        {
+    private void initVelocityTrackerIfNotExists() {
+        if (mVelocityTracker == null) {
             mVelocityTracker = VelocityTracker.obtain();
         }
     }
 
-    private void recycleVelocityTracker()
-    {
-        if (mVelocityTracker != null)
-        {
+    private void recycleVelocityTracker() {
+        if (mVelocityTracker != null) {
             mVelocityTracker.recycle();
             mVelocityTracker = null;
         }
@@ -267,8 +231,7 @@ public class SuspendLayout extends LinearLayout implements NestedScrollingParent
 
 
     @Override
-    protected void onFinishInflate()
-    {
+    protected void onFinishInflate() {
         super.onFinishInflate();
         mTop = getChildAt(0);
         mNav = getChildAt(1);
@@ -285,38 +248,7 @@ public class SuspendLayout extends LinearLayout implements NestedScrollingParent
     }
 
     @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec)
-    {
-     /*   Log.d(TAG, "onMeasure---->>>>>>>>");
-        ViewGroup.LayoutParams params = mViewPager.getLayoutParams();
-        //修复键盘弹出后键盘关闭布局高度不对问题
-        int height = getMeasuredHeight() - mNav.getMeasuredHeight();
-        mViewPagerMaxHeight = (height >= mViewPagerMaxHeight ? height : mViewPagerMaxHeight);
-        params.height = *//*mViewPagerMaxHeight - stickOffset*//*height - stickOffset;
-        mViewPager.setLayoutParams(params);
-
-        //修复键盘弹出后Top高度不对问题
-        int topHeight = mTop instanceof ViewGroup ? ((ViewGroup) mTop).getChildAt(0).getMeasuredHeight() : mTop.getMeasuredHeight();
-        ViewGroup.LayoutParams topParams = mTop.getLayoutParams();
-        Log.d(TAG, "topHeight---->>>>>>>>" + topHeight);
-
-        mTopViewMaxHeight = (topHeight >= mTopViewMaxHeight ? topHeight : mTopViewMaxHeight);
-        topParams.height = *//*mTopViewMaxHeight*//*topHeight;
-        mTop.setLayoutParams(topParams);
-
-        //设置mTopViewHeight
-        mTopViewHeight = topParams.height - stickOffset;
-        Log.d(TAG, "onMeasure--mTopViewHeight:" + mTopViewHeight);
-
-        isTopHidden = getScrollY() == mTopViewHeight;*/
-        //不限制顶部的高度
-        /*super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        ViewGroup.LayoutParams params = mViewPager.getLayoutParams();
-        //设置mTopViewHeight
-        mTopViewHeight = params.height - stickOffset;
-        Log.d(TAG, "onMeasure--mTopViewHeight:" + mTopViewHeight);
-
-        isTopHidden = getScrollY() == mTopViewHeight;*/
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         ViewGroup.LayoutParams params = mViewPager.getLayoutParams();
         getChildAt(0).measure(widthMeasureSpec, MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));

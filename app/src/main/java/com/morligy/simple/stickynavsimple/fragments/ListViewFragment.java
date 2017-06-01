@@ -7,10 +7,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import com.morligy.simple.R;
+import com.morligy.suspendlayout.view.NestedListView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +30,7 @@ public class ListViewFragment extends BaseFragment {
 
 
     @Bind(R.id.id_stickynavlayout_innerscrollview)
-    ListView mListView;
+    NestedListView mListView;
 
     public static ListViewFragment newInstance() {
 
