@@ -6,4 +6,10 @@
         <!--距离悬浮的位置-->
         <attr name="stickOffset" format="dimension" />
     </declare-styleable>
+    <declare-styleable name="SuspendLayout">
+        <!--默认是否悬停tab-->
+        <attr name="isSupendNav" format="boolean" />
+        <!--距离悬浮的位置-->
+        <attr name="SupendOffset" format="dimension" />
+    </declare-styleable>
 </resources>

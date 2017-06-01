@@ -1,7 +1,12 @@
 package com.morligy.suspendlayout.view;
 
 import android.content.Context;
+import android.content.res.TypedArray;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.NestedScrollingParent;
+import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
@@ -12,6 +17,8 @@ import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.OverScroller;
+
+import com.morligy.suspendlayout.R;
 
 /**
  * Created by Morligy on 2017/5/31.
@@ -31,14 +38,22 @@ public class SuspendLayout extends LinearLayout implements NestedScrollingParent
     private int mTouchSlop;
     private int mMaximumVelocity, mMinimumVelocity;
 
+    private int mTopViewMaxHeight;
+    private int mViewPagerMaxHeight;
+    private boolean isTopHidden = false;
+    private int stickOffset;
+
+    private ViewGroup mInnerScrollView;
+
     private float mLastY;
     private boolean mDragging;
 
-    public void setSuspendScrollListener(SuspendScrollListener suspendScrollListener) {
-        this.suspendScrollListener = suspendScrollListener;
+    public void setListener(onStickStateChangeListener listener) {
+        this.listener = listener;
     }
 
-    private SuspendScrollListener suspendScrollListener;
+    private onStickStateChangeListener listener;
+
     @Override
     public boolean onStartNestedScroll(View child, View target, int nestedScrollAxes)
     {
@@ -97,6 +112,34 @@ public class SuspendLayout extends LinearLayout implements NestedScrollingParent
         } else {
             return false;
         }*/
+       /* if (mInnerScrollView != null && mVelocityTracker.getYVelocity() > 0) {
+            if (mInnerScrollView instanceof ScrollView) {
+                if (mInnerScrollView.getScrollY() != 0) {
+                  return true;
+                }
+            } else if (mInnerScrollView instanceof ListView) {
+                ListView lv = (ListView) mInnerScrollView;
+                View c = lv.getChildAt(lv.getFirstVisiblePosition());
+                if (c != null && c.getTop() != 0) {
+                    return true;
+                }
+            } else if (mInnerScrollView instanceof GridViewWithHeaderAndFooter) {
+                GridView gv = (GridView) mInnerScrollView;
+                View c = gv.getChildAt(gv.getFirstVisiblePosition());
+                if ( c != null && c.getTop() != 0) {
+                    return true;
+                }
+            } else if (mInnerScrollView instanceof RecyclerView) {
+                RecyclerView rv = (RecyclerView) mInnerScrollView;
+                if (rv.getLayoutManager() == null) {
+                    throw new IllegalStateException("RecyclerView does not have LayoutManager instance.");
+                }
+                View c = rv.getChildAt(0);
+                if (c != null && c.getTop() != 0) {
+                    return true;
+                }
+            }
+        }*/
         fling((int) velocityY);
         return false;
     }
@@ -114,8 +157,12 @@ public class SuspendLayout extends LinearLayout implements NestedScrollingParent
     {
         super(context, attrs);
         setOrientation(LinearLayout.VERTICAL);
-
+        TypedArray a = context.obtainStyledAttributes(attrs,
+                R.styleable.SuspendLayout);
+        stickOffset = a.getDimensionPixelSize(R.styleable.SuspendLayout_SupendOffset, 0);
+        a.recycle();
         mScroller = new OverScroller(context);
+        mVelocityTracker = VelocityTracker.obtain();
         mTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
         mMaximumVelocity = ViewConfiguration.get(context)
                 .getScaledMaximumFlingVelocity();
@@ -140,7 +187,31 @@ public class SuspendLayout extends LinearLayout implements NestedScrollingParent
             mVelocityTracker = null;
         }
     }
-
+    private void getCurrentScrollView() {
+        int currentItem = mViewPager.getCurrentItem();
+        PagerAdapter a = mViewPager.getAdapter();
+        if (a instanceof FragmentPagerAdapter) {
+            FragmentPagerAdapter fadapter = (FragmentPagerAdapter) a;
+            Fragment item = fadapter.getItem(currentItem);
+            View v = item.getView();
+            if (v != null) {
+                mInnerScrollView = (ViewGroup) (v
+                        .findViewById(R.id.id_stickynavlayout_innerscrollview));
+            }
+        } else if (a instanceof FragmentStatePagerAdapter) {
+            FragmentStatePagerAdapter fsAdapter = (FragmentStatePagerAdapter) a;
+            Fragment item = fsAdapter.getItem(currentItem);
+            View v = item.getView();
+            if (v != null) {
+                mInnerScrollView = (ViewGroup) (v
+                        .findViewById(R.id.id_stickynavlayout_innerscrollview));
+            }
+        } else {
+            throw new RuntimeException(
+                    "mViewPager  should be  used  FragmentPagerAdapter or  FragmentStatePagerAdapter  !");
+        }
+        //...
+    }
 
 //    @Override
 //    public boolean onTouchEvent(MotionEvent event)
@@ -216,10 +287,39 @@ public class SuspendLayout extends LinearLayout implements NestedScrollingParent
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec)
     {
-        //不限制顶部的高度
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        getChildAt(0).measure(widthMeasureSpec, MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
+     /*   Log.d(TAG, "onMeasure---->>>>>>>>");
         ViewGroup.LayoutParams params = mViewPager.getLayoutParams();
+        //修复键盘弹出后键盘关闭布局高度不对问题
+        int height = getMeasuredHeight() - mNav.getMeasuredHeight();
+        mViewPagerMaxHeight = (height >= mViewPagerMaxHeight ? height : mViewPagerMaxHeight);
+        params.height = *//*mViewPagerMaxHeight - stickOffset*//*height - stickOffset;
+        mViewPager.setLayoutParams(params);
+
+        //修复键盘弹出后Top高度不对问题
+        int topHeight = mTop instanceof ViewGroup ? ((ViewGroup) mTop).getChildAt(0).getMeasuredHeight() : mTop.getMeasuredHeight();
+        ViewGroup.LayoutParams topParams = mTop.getLayoutParams();
+        Log.d(TAG, "topHeight---->>>>>>>>" + topHeight);
+
+        mTopViewMaxHeight = (topHeight >= mTopViewMaxHeight ? topHeight : mTopViewMaxHeight);
+        topParams.height = *//*mTopViewMaxHeight*//*topHeight;
+        mTop.setLayoutParams(topParams);
+
+        //设置mTopViewHeight
+        mTopViewHeight = topParams.height - stickOffset;
+        Log.d(TAG, "onMeasure--mTopViewHeight:" + mTopViewHeight);
+
+        isTopHidden = getScrollY() == mTopViewHeight;*/
+        //不限制顶部的高度
+        /*super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        ViewGroup.LayoutParams params = mViewPager.getLayoutParams();
+        //设置mTopViewHeight
+        mTopViewHeight = params.height - stickOffset;
+        Log.d(TAG, "onMeasure--mTopViewHeight:" + mTopViewHeight);
+
+        isTopHidden = getScrollY() == mTopViewHeight;*/
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        ViewGroup.LayoutParams params = mViewPager.getLayoutParams();
+        getChildAt(0).measure(widthMeasureSpec, MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
         params.height = getMeasuredHeight() - mNav.getMeasuredHeight();
         setMeasuredDimension(getMeasuredWidth(), mTop.getMeasuredHeight() + mNav.getMeasuredHeight() + mViewPager.getMeasuredHeight());
 
@@ -254,6 +354,14 @@ public class SuspendLayout extends LinearLayout implements NestedScrollingParent
         {
             super.scrollTo(x, y);
         }
+        //set  listener 设置悬浮监听回调
+        if (listener != null) {
+//            if(lastIsTopHidden!=isTopHidden){
+//                lastIsTopHidden=isTopHidden;
+            listener.isStick(isTopHidden);
+//            }
+            listener.scrollPercent((float) getScrollY() / (float) mTopViewHeight);
+        }
     }
 
     @Override
@@ -269,7 +377,28 @@ public class SuspendLayout extends LinearLayout implements NestedScrollingParent
         }
     }
 
-    public interface SuspendScrollListener{
-        void scroll(double ScrollPercent);
+
+
+    /**
+     * 悬浮状态回调
+     */
+    public interface onStickStateChangeListener {
+        /**
+         * 是否悬浮的回调
+         *
+         * @param isStick true 悬浮 ,false 没有悬浮
+         */
+        void isStick(boolean isStick);
+
+        /**
+         * 距离悬浮的距离的百分比
+         *
+         * @param percent 0~1(向上) or 1~0(向下) 的浮点数
+         */
+        void scrollPercent(float percent);
+    }
+
+    public void setOnStickStateChangeListener(onStickStateChangeListener listener) {
+        this.listener = listener;
     }
 }
