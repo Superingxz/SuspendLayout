@@ -1,4 +1,4 @@
-package com.morligy.simple;
+package com.morligy.simple.suspendsimple;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -8,25 +8,26 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.util.Log;
 
+import com.morligy.simple.R;
 import com.morligy.suspendlayout.view.SimpleViewPagerIndicator;
 import com.morligy.suspendlayout.view.SuspendLayout;
 
 
-public class MainActivity extends FragmentActivity implements SuspendLayout.SuspendScrollListener {
+public class SuspendsActivity extends FragmentActivity implements SuspendLayout.SuspendScrollListener {
     private String[] mTitles = new String[] { "简介", "评价", "相关" };
     private SimpleViewPagerIndicator mIndicator;
     private ViewPager mViewPager;
     private FragmentPagerAdapter mAdapter;
     private TabFragment[] mFragments = new TabFragment[mTitles.length];
     private SuspendLayout suspendLayout;
-    private String TAG = "MainActivity";
+    private String TAG = "SuspendsActivity";
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_suspends);
 
         initViews();
         initDatas();

@@ -1,36 +1,41 @@
-<com.morligy.suspendlayout.view.SuspendLayout
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/id_sticky_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
-    <RelativeLayout
-        android:id="@+id/id_stickynavlayout_topview"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context=".stickynavsimple.activity.MainActivity">
+
+    <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#4400ff00" >
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="256dp"
-            android:gravity="center"
-            android:text="软件介绍"
-            android:textSize="30sp"
-            android:textStyle="bold" />
-    </RelativeLayout>
+        android:onClick="SimpleStick"
+        android:text="简单悬浮" />
 
-    <com.morligy.suspendlayout.view.SimpleViewPagerIndicator
-        android:id="@+id/id_stickynavlayout_indicator"
+    <Button
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="#ffffffff" >
-    </com.morligy.suspendlayout.view.SimpleViewPagerIndicator>
+        android:layout_height="wrap_content"
+        android:onClick="StickPullRefresh"
+        android:text="支持下拉刷新的悬浮" />
 
-    <android.support.v4.view.ViewPager
-        android:id="@+id/id_stickynavlayout_viewpager"
+    <Button
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        >
-    </android.support.v4.view.ViewPager>
+        android:layout_height="wrap_content"
+        android:onClick="TopViewOverOne"
+        android:text="顶部区域超过一屏的情况" />
 
-</com.morligy.suspendlayout.view.SuspendLayout >
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="SwipeRefresh"
+        android:text="外套SwipeRefreshLayout" />
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="onClickTopOperate"
+        android:text="动态隐藏/显示top区域内的控件" />
+</LinearLayout>

@@ -30,5 +30,12 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:recyclerview-v7:25.3.1'
     compile 'com.zhy:base-adapter:2.0.0'
+    compile 'com.android.support:design:25.3.1'
+    compile 'com.jakewharton:butterknife:7.0.1'
+//    compile 'com.astuetz:pagerslidingtabstrip:1.0.1'
+    compile 'com.gxz.pagerslidingtabstrip:library:1.1'
+//    compile 'in.srain.cube:grid-view-with-header-footer:1.0.12'//library中已经有了
+    compile 'com.nineoldandroids:library:2.4.0'
+    compile 'in.srain.cube:ultra-ptr:1.0.11'
     compile project(path: ':library')
 }
