@@ -27,8 +27,6 @@ import butterknife.ButterKnife;
  * @time 上午11:46
  */
 public class ListViewFragment extends BaseFragment {
-
-
     @Bind(R.id.id_stickynavlayout_innerscrollview)
     NestedListView mListView;
 
