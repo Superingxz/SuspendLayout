@@ -3,9 +3,11 @@ package com.morligy.simple.suspendsimple;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.TextView;
 
 import com.gxz.PagerSlidingTabStrip;
+import com.jsonmo.pulltofreshandload.PullToRefreshBase;
 import com.morligy.simple.R;
 import com.morligy.simple.stickynavsimple.adapter.FragmentsViewPagerAdapter;
 import com.morligy.simple.stickynavsimple.fragments.BaseFragment;
@@ -14,6 +16,7 @@ import com.morligy.simple.stickynavsimple.fragments.GridViewWithHeaderAndFooterF
 import com.morligy.simple.stickynavsimple.fragments.ListViewFragment;
 import com.morligy.simple.stickynavsimple.fragments.RecycleViewFragment;
 import com.morligy.simple.stickynavsimple.fragments.ScrollViewFragment;
+import com.morligy.simple.view.MPullToRefreshScrollView;
 import com.morligy.suspendlayout.view.SuspendLayout;
 import com.nineoldandroids.view.ViewHelper;
 
@@ -24,6 +27,8 @@ import butterknife.ButterKnife;
 
 
 public class SuspendsActivity extends AppCompatActivity {
+    @Bind(R.id.refreshview)
+    MPullToRefreshScrollView refreshScrollView;
     @Bind(R.id.id_stickynavlayout_indicator)
     PagerSlidingTabStrip pagerSlidingTabStrip;
     @Bind(R.id.id_stickynavlayout_viewpager)
@@ -41,6 +46,20 @@ public class SuspendsActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         ViewHelper.setAlpha(title,0);
+
+        refreshScrollView.setPullRefreshEnabled(true);
+        refreshScrollView.setPullLoadEnabled(true);
+        refreshScrollView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener<View>() {
+            @Override
+            public void onPullDownToRefresh(PullToRefreshBase<View> refreshView) {
+                refreshScrollView.onPullDownRefreshComplete();
+            }
+
+            @Override
+            public void onPullUpToRefresh(PullToRefreshBase<View> refreshView) {
+                refreshScrollView.onPullUpRefreshComplete();
+            }
+        });
 
         ArrayList<BaseFragment> fragments = new ArrayList<>();
         fragments.add(ListViewFragment.newInstance());

@@ -1,9 +1,14 @@
-<RelativeLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/id_stickynavlayout_topview"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#4400ff00" >
-        <include layout="@layout/layout_suspends" />
-        <include layout="@layout/header_layout"/>
-</RelativeLayout>
+<com.morligy.simple.view.MPullToRefreshScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/refreshview"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#4400ff00">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#4400ff00" >
+                <include layout="@layout/layout_suspends" />
+                <include layout="@layout/header_layout"/>
+        </RelativeLayout>
+</com.morligy.simple.view.MPullToRefreshScrollView>
