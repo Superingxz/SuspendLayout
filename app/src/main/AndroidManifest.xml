@@ -17,6 +17,7 @@
         </activity>
         <activity  android:name=".suspendsimple.SuspendsActivity"
             android:label="SuspendsActivity"
+            android:theme="@style/AppTheme.NoActionBar"
             />
         <activity  android:name=".stickynavsimple.activity.SimpleStickActivity"
             android:label="SimpleStickActivity"

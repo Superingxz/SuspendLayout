@@ -3,6 +3,22 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 25
     buildToolsVersion "25.0.2"
+    signingConfigs {
+        //调试版的keystore
+        debug {
+            storeFile file("E:\\suspend.jks")
+            storePassword "123456"
+            keyAlias "mo"
+            keyPassword "123456"
+        }
+        //发布版的keystore
+        release {
+            storeFile file("E:\\suspend.jks")
+            storePassword "123456"
+            keyAlias "mo"
+            keyPassword "123456"
+        }
+    }
     defaultConfig {
         applicationId "com.morligy.simple"
         minSdkVersion 11
@@ -15,6 +31,26 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    productFlavors {
+        android {}
+        wandoujia {}
+        xiaomi {}
+        huawei {}
+        productFlavors.all { flavor ->
+            flavor.manifestPlaceholders = [CHANNEL_VALUE: name]
+        }
+    }
+
+    applicationVariants.all { variant ->
+        variant.outputs.each { output ->
+            def outputFile = output.outputFile
+            if (outputFile != null && outputFile.name.endsWith('.apk')) {
+                def fileName = "悬浮_${defaultConfig.versionName}_${variant.productFlavors[0].name}.apk"
+                output.outputFile = new File(outputFile.parent, fileName)
+            }
         }
     }
 }
@@ -38,4 +74,5 @@ dependencies {
     compile 'com.nineoldandroids:library:2.4.0'
     compile 'in.srain.cube:ultra-ptr:1.0.11'
     compile project(path: ':library')
+    compile 'com.jsonmo.pulltofreshandload:PullToFrefreshAndLoad:1.0.0'
 }

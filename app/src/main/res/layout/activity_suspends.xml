@@ -1,43 +1,9 @@
-<com.morligy.suspendlayout.view.SuspendLayout xmlns:tools="http://schemas.android.com/tools"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:pst="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/id_stick"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
-    <RelativeLayout
+<RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/id_stickynavlayout_topview"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#4400ff00" >
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="256dp"
-            android:gravity="center"
-            android:text="软件介绍"
-            android:textSize="30sp"
-            android:textStyle="bold" />
-    </RelativeLayout>
-
-    <com.gxz.PagerSlidingTabStrip
-        android:id="@+id/id_stickynavlayout_indicator"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:textSize="16sp"
-        pst:pstsTextAllCaps="false"
-        pst:pstsDividerColor="@color/colorPrimary"
-        pst:pstsIndicatorColor="@color/colorPrimary"
-        pst:pstsIndicatorHeight="5dp"
-        pst:pstsScaleZoomMax="0"
-        pst:pstsShouldExpand="false"
-        pst:pstsTextSelectedColor="#303F9F"
-        pst:pstsUnderlineColor="@color/colorPrimary" />
-
-    <android.support.v4.view.ViewPager
-        android:id="@+id/id_stickynavlayout_viewpager"
-        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        >
-    </android.support.v4.view.ViewPager>
-
-</com.morligy.suspendlayout.view.SuspendLayout >
+        android:background="#4400ff00" >
+        <include layout="@layout/layout_suspends" />
+        <include layout="@layout/header_layout"/>
+</RelativeLayout>

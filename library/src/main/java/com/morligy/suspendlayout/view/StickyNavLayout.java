@@ -381,7 +381,7 @@ public class StickyNavLayout extends LinearLayout {
             case MotionEvent.ACTION_CANCEL:
             case MotionEvent.ACTION_UP:
                 mDragging = false;
-                recycleVelocityTracker();
+                getCurrentScrollView();
                 break;
         }
         return super.onInterceptTouchEvent(ev);
@@ -485,9 +485,6 @@ public class StickyNavLayout extends LinearLayout {
         }
 
         isTopHidden = getScrollY() == mTopViewHeight;
-        if (isTopHidden) {
-            requestDisallowInterceptTouchEvent(true);
-        }
 
         //set  listener 设置悬浮监听回调
         if (listener != null) {

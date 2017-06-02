@@ -18,28 +18,33 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:onClick="SimpleStick"
-        android:text="简单悬浮" />
+        android:text="简单悬浮"
+        android:visibility="gone"/>
 
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:onClick="StickPullRefresh"
-        android:text="支持下拉刷新的悬浮" />
+        android:text="支持下拉刷新的悬浮"
+        android:visibility="gone"/>
 
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:onClick="TopViewOverOne"
-        android:text="顶部区域超过一屏的情况" />
+        android:text="顶部区域超过一屏的情况"
+        android:visibility="gone"/>
 
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:onClick="SwipeRefresh"
-        android:text="外套SwipeRefreshLayout" />
+        android:text="外套SwipeRefreshLayout"
+        android:visibility="gone"/>
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:onClick="onClickTopOperate"
-        android:text="动态隐藏/显示top区域内的控件" />
+        android:text="动态隐藏/显示top区域内的控件"
+        android:visibility="gone"/>
 </LinearLayout>

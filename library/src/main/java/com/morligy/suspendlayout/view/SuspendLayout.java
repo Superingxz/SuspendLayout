@@ -83,7 +83,7 @@ public class SuspendLayout extends LinearLayout implements NestedScrollingParent
     public void onNestedPreScroll(View target, int dx, int dy, int[] consumed)
     {
         Log.e(TAG, "onNestedPreScroll");
-        boolean hiddenTop = dy > 0 && getScrollY() < mTopViewHeight - 80;
+        boolean hiddenTop = dy > 0 && getScrollY() < mTopViewHeight - stickOffset;
         boolean showTop = dy < 0 && getScrollY() >= 0 && !ViewCompat.canScrollVertically(target, -1);
 
         if (hiddenTop || showTop)
@@ -95,7 +95,7 @@ public class SuspendLayout extends LinearLayout implements NestedScrollingParent
 
     @Override
     public boolean onNestedFling(View target, float velocityX, float velocityY, boolean consumed) {
-        boolean hiddenTop = velocityY > 0 && getScrollY() < mTopViewHeight - 80;
+        boolean hiddenTop = velocityY > 0 && getScrollY() < mTopViewHeight - stickOffset;
         boolean showTop = velocityY < 0 && getScrollY() >= 0 && !ViewCompat.canScrollVertically(target, -1);
         if (hiddenTop || showTop) {
             fling((int) velocityY);
@@ -107,7 +107,7 @@ public class SuspendLayout extends LinearLayout implements NestedScrollingParent
     public boolean onNestedPreFling(View target, float velocityX, float velocityY) {
         Log.e(TAG, "onNestedPreScroll");
         int mScrollY = getScrollY();
-        boolean hiddenTop = velocityY > 0 && mScrollY < mTopViewHeight - 80;
+        boolean hiddenTop = velocityY > 0 && mScrollY < mTopViewHeight - stickOffset;
         boolean canScrooVetical = ViewCompat.canScrollVertically(target, -1);
         boolean showTop = velocityY < 0 && mScrollY >= 0 && !canScrooVetical;
         if (hiddenTop || showTop) {
@@ -278,9 +278,9 @@ public class SuspendLayout extends LinearLayout implements NestedScrollingParent
         {
             y = 0;
         }
-        if (y > mTopViewHeight - 80)
+        if (y > mTopViewHeight - stickOffset)
         {
-            y = mTopViewHeight - 80;
+            y = mTopViewHeight - stickOffset;
         }
         if (y != getScrollY())
         {
@@ -292,7 +292,7 @@ public class SuspendLayout extends LinearLayout implements NestedScrollingParent
 //                lastIsTopHidden=isTopHidden;
             listener.isStick(isTopHidden);
 //            }
-            listener.scrollPercent((float) getScrollY() / (float) mTopViewHeight);
+            listener.scrollPercent(Math.abs((float) getScrollY() / (float) (mTopViewHeight - stickOffset)));
         }
     }
 

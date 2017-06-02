@@ -3,6 +3,7 @@ package com.morligy.simple.suspendsimple;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.TextView;
 
 import com.gxz.PagerSlidingTabStrip;
 import com.morligy.simple.R;
@@ -14,6 +15,7 @@ import com.morligy.simple.stickynavsimple.fragments.ListViewFragment;
 import com.morligy.simple.stickynavsimple.fragments.RecycleViewFragment;
 import com.morligy.simple.stickynavsimple.fragments.ScrollViewFragment;
 import com.morligy.suspendlayout.view.SuspendLayout;
+import com.nineoldandroids.view.ViewHelper;
 
 import java.util.ArrayList;
 
@@ -28,7 +30,8 @@ public class SuspendsActivity extends AppCompatActivity {
     ViewPager viewPager;
     @Bind(R.id.id_stick)
     SuspendLayout stickyNavLayout;
-
+    @Bind(R.id.title)
+    TextView title;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -36,6 +39,8 @@ public class SuspendsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_suspends);
         ButterKnife.bind(this);
+
+        ViewHelper.setAlpha(title,0);
 
         ArrayList<BaseFragment> fragments = new ArrayList<>();
         fragments.add(ListViewFragment.newInstance());
@@ -87,7 +92,7 @@ public class SuspendsActivity extends AppCompatActivity {
 
         @Override
         public void scrollPercent(float percent) {
-
+            ViewHelper.setAlpha(title,percent);
         }
     };
 
